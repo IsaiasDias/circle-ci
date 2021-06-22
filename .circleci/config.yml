@@ -1,0 +1,50 @@
+version: 2.1
+
+jobs:
+  build:
+    docker:
+      - image: 'circleci/openjdk:8-jdk'
+    steps:
+      - checkout
+      - run:
+          name: build & test
+          command: mvn verify
+      - persist_to_workspace:
+          root: .
+          paths:
+            - target/*
+  sonar:
+    docker:
+      - image: 'circleci/openjdk:11-jdk'
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: sonar
+          command: mvn sonar:sonar
+
+  build-deploy:
+    machine: true
+    steps:
+      - checkout
+      - run:
+          name: Build and push Docker image to Heroku
+          command: |
+            set -x
+            sudo curl https://cli-assets.heroku.com/install.sh | sh
+            HEROKU_API_KEY=${HEROKU_API_KEY} heroku container:login
+            HEROKU_API_KEY=${HEROKU_API_KEY} heroku container:push -a circle-ci-devops web
+            HEROKU_API_KEY=${HEROKU_API_KEY} heroku container:release -a circle-ci-devops web
+
+workflows:
+  main:
+    jobs:
+      - build
+      - sonar:
+          context: SonarCloud
+          requires:
+            - build
+      - build-deploy:
+          requires:
+            - sonar
