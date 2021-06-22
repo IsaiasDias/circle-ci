@@ -16,9 +16,14 @@ public class App {
         SpringApplication.run(App.class, args);
     }
 	
+//	@GetMapping("/")
+//	public ModelAndView index() {
+//		return new ModelAndView("index");
+//	}
+	
 	@GetMapping("/")
-	public ModelAndView index() {
-		return new ModelAndView("index");
+	public String hello() {
+		return "Hello";
 	}
 	
 }
