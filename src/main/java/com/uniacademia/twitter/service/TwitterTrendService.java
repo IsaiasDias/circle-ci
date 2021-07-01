@@ -35,7 +35,7 @@ public class TwitterTrendService {
 		List<String> tweetsIds = new ArrayList<>();
 		for (Trend trend : trends.getTrends()) {
 			SearchResults results = twitter.searchOperations().search(new SearchParameters(trend.getName()).count(2));
-			if (results.getTweets().size() > 0) {
+			if (!results.getTweets().isEmpty()) {
 				tweetsIds.add(String.valueOf(results.getTweets().get(0).getId()));
 			}
 		}

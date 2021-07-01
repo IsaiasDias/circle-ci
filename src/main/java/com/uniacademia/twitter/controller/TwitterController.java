@@ -23,7 +23,7 @@ public class TwitterController {
 	@Autowired
 	private TwitterTrendService twitterTrendService;
 	
-	@CrossOrigin(origins = "http://https://circle-ci-devops.herokuapp.com")
+	@CrossOrigin(origins = "http://localhost:3000")
 	@RequestMapping(value = "{id}", method = RequestMethod.GET)
 	public List<String>getTrendsByCountry(@PathVariable String id) throws ExecutionException {
 		List<String> trends = twitterTrendService.getTrendTweetsByCountry(id);
